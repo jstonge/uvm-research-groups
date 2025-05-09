@@ -4,7 +4,7 @@
     import BarChart from '$lib/components/myBar.svelte';
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
 
-    const duckDB = useDuckDB('data', './data.csv');
+    const duckDB = useDuckDB('data', '/data.csv');
 
     // State variables
     let rawData = $state([]);
