@@ -1,10 +1,10 @@
 <script>
     import { useDuckDB } from '$lib/db/useDuckDB.svelte.js';
     import MD from '$lib/components/MarkdownRenderer.svelte';
-    import BarChart from '../lib/components/myBar.svelte';
+    import BarChart from '$lib/components/myBar.svelte';
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
 
-    const duckDB = useDuckDB('data', '/data.csv');
+    const duckDB = useDuckDB('data', './data.csv');
 
     // State variables
     let rawData = $state([]);
@@ -16,9 +16,7 @@
     
         if (!duckDB.loading && duckDB.query) {
         
-            rawData = await duckDB.query(
-                `SELECT * FROM data`
-            );
+            rawData = await duckDB.query(`SELECT * FROM data`);
             
             countData = await duckDB.query(
                 `
@@ -46,8 +44,6 @@
             );
         }
     });
-    
-    $inspect(selected)
 </script>
 
 
