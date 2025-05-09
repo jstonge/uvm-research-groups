@@ -1,5 +1,6 @@
 // $lib/db/useDuckDB.svelte.js
 import { browser } from '$app/environment';
+import { base } from '$app/paths'; // Import the base path from SvelteKit
 
 /**
  * Hook to use a DuckDB table in a component
@@ -22,10 +23,16 @@ export function useDuckDB(tableName, sourcePath) {
       // Import DuckDB client
       const { createDuckDBClient, FileAttachment } = await import('../duckdb-client');
       
-      console.log('Creating DuckDB client...');
+      // Create the full path with the base path included
+      const fullPath = sourcePath.startsWith('/') 
+        ? `${base}${sourcePath}`  // Add base path to absolute paths
+        : sourcePath;             // Leave relative paths as is
+      
+      console.log('Creating DuckDB client with path:', fullPath);
+      
       // Create client with source
       const client = await createDuckDBClient({
-        [tableName]: FileAttachment(sourcePath)
+        [tableName]: FileAttachment(fullPath)
       });
       
       db = client;
