@@ -1,39 +1,77 @@
-# sv
+# UVM research groups
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-## Creating a project
+To get the setup up and running, we did as follows:
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+- create a new sveltekit app using: `npx sv create my-app`
+  - choose the `tailwind` option, with `typography` (tailwindv4 is the default now)
+  - we also chose a `static` adapter for deployment on github pages.
+  - we chose `pnpm` as package manager
+- install relevant packages using `pnpm
+   - `pnpm install bits-ui@latest, duckdb-wasm, observableplot, layercake, ex-markdown`, and a few more using pnpm (see `package.json`).
+- see `vite.config.js` for a `duckdb-wasm` option
+- for github pages, it is important to add
+  - the right paths config in `svelte.config.js`
+  - `.nojekyll` file in `static/`
+  - in `src/routes/layout.ts`
+```ts
+export const prerender = true;
 ```
+  - in `.github/workflows/deploy.yml`
+```yaml
+name: Deploy to GitHub Pages
 
-## Developing
+on:
+  push:
+    branches: [main]
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+jobs:
+  build_site:
+    runs-on: ubuntu-latest
 
-```bash
-npm run dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}
+        run: pnpm run build
+
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/
+
+  deploy:
+    needs: build_site
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-# uvm-research-groups

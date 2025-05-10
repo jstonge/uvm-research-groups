@@ -65,9 +65,9 @@ This is an example of a sveltekit app that uses
 - [ex-markdown](https://github.com/ssssota/svelte-exmarkdown) as markdown renderer.
 - [ObservablePlot](https://observablehq.com/plot/) for quick data visualizations.
 - [LayerCake](https://layercake.graphics/) for tailored data visualizations. 
-- [Bits-UI](https://bits-ui.com/) for other components.
+- [Bits-UI](https://bits-ui.com/) with [Tailwind 4](https://tailwindcss.com/) for other components.
 
-We weight the pros and cons of such setup compared to using something like [Observable framework](https://github.com/observablehq/framework).
+We weight the pros and cons of such setup compared to using something like [Observable framework](https://github.com/observablehq/framework). See README on github to get the setup up and running.
 
 ## Count Data
 
