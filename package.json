@@ -36,6 +36,7 @@
 	"dependencies": {
 		"@duckdb/duckdb-wasm": "1.29.1-dev132.0",
 		"@lucide/svelte": "^0.509.0",
+		"@observablehq/plot": "^0.6.17",
 		"bits-ui": "^1.4.7",
 		"d3-scale": "^4.0.2",
 		"layercake": "^8.4.3",

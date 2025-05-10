@@ -1,23 +1,21 @@
 <script>
     import { useDuckDB } from '$lib/db/useDuckDB.svelte.js';
     import MD from '$lib/components/MarkdownRenderer.svelte';
-    import BarChart from '$lib/components/myBar.svelte';
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
+    import * as Plot from '@observablehq/plot';
+    import ObservablePlot from '$lib/components/ObservablePlot.svelte';
 
     const duckDB = useDuckDB('data', '/data.csv');
 
     // State variables
     let rawData = $state([]);
     let countData = $state([]);
-    let wrangledData = $state([]);
     let selected = $state('');
 
+    // When wrangling with duckdb-wasm, we need to do it async.
     $effect(async () => {
-    
         if (!duckDB.loading && duckDB.query) {
-        
             rawData = await duckDB.query(`SELECT * FROM data`);
-            
             countData = await duckDB.query(
                 `
                 SELECT *
@@ -29,35 +27,47 @@
                 ) AS grouped
                 WHERE has_research_group = 1
                 ORDER BY n DESC
-                LIMIT 5
+                LIMIT 10
                 `
             );
         }
     });
   
-    // Second effect that depends on selected department
-    $effect(async () => {
-        if (!duckDB.loading && duckDB.query && selected) {
-            wrangledData = await duckDB.query(
-                `SELECT * FROM data WHERE host_dept = ?`,
-                [selected]
-            );
-        }
+    // Use $derived.by for function-based derived state
+    let wrangledData = $derived.by(() => {
+        if (!selected || !rawData.length) return [];
+        return rawData.filter(d => d.host_dept === selected);
     });
 </script>
-
 
 <MD text={`
 # Hello Markdown
 
-This is an example of a sveltekit app that uses DuckDB to query a CSV file, ex-markdown as markdown renderer, and LayerCake for data visualization.
+This is an example of a sveltekit app that uses DuckDB to query a CSV file, ex-markdown as markdown renderer, and LayerCake for data visualization. But we gain a few things, such as sorting and aggregating on the fly while plotting. 
 
 ## Count Data
 
 We start by looking at some count data
 `}/>
 
-<BarChart data={countData} yKey={'host_dept'} xKey={'n'}/>
+<MD text={`Here is the corresponding bar chart in Observable Plot. The code is a bit clunky.`}/>
+
+<ObservablePlot 
+  options={{
+    marginLeft: 300,
+    width: 600,
+    x: { label: "Count", grid: true },
+    y: { label: "Department" },
+    marks: [
+      Plot.barX(countData, {
+        x: 'n', 
+        y: 'host_dept', 
+        fill: 'steelblue',
+        sort: {y: '-x'}
+      })
+    ]
+  }}
+/>
 
 <MD text={`Here is the corresponding table`}/>
 
