@@ -1,12 +1,12 @@
 <script>
     import { useDuckDB } from '$lib/db/useDuckDB.svelte.js';
+    import * as Plot from '@observablehq/plot';
+    
     import MD from '$lib/components/MarkdownRenderer.svelte';
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
-    import * as Plot from '@observablehq/plot';
     import ObservablePlot from '$lib/components/ObservablePlot.svelte';
     import MyRange from '$lib/components/MyRange.svelte';
     import MySelect from '$lib/components/MySelect.svelte';
-
 
     const duckDB = useDuckDB('data', '/data.csv');
 
