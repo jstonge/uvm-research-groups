@@ -6,7 +6,7 @@
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
     import ObservablePlot from '$lib/components/ObservablePlot.svelte';
     import MyRange from '$lib/components/MyRange.svelte';
-    // import MySelect from '$lib/components/MySelect.svelte';
+    import MySelect from '$lib/components/MySelect.svelte';
 
     const duckDB = useDuckDB('data', '/data.csv');
 
