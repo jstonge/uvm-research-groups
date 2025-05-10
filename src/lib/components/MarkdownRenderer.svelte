@@ -20,9 +20,11 @@
     }
 </script>
 
+<div class="prose prose-lg max-w-none dark:prose-invert">
 <section class="content-section" >        
     <Markdown md={processContent(text)} {plugins} />
 </section>
+</div>
 
 <style>
     .content-section {

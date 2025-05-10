@@ -4,18 +4,27 @@
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
     import * as Plot from '@observablehq/plot';
     import ObservablePlot from '$lib/components/ObservablePlot.svelte';
+    import MyRange from '$lib/components/MyRange.svelte';
+    import MySelect from '$lib/components/MySelect.svelte';
+
 
     const duckDB = useDuckDB('data', '/data.csv');
 
     // State variables
     let rawData = $state([]);
     let countData = $state([]);
-    let selected = $state('');
+    let selected = $state("");
 
     // When wrangling with duckdb-wasm, we need to do it async.
     $effect(async () => {
         if (!duckDB.loading && duckDB.query) {
-            rawData = await duckDB.query(`SELECT * FROM data`);
+            rawData = await duckDB.query(`SELECT * EXCLUDE (notes, first_pub_year) FROM data`);
+        }
+    });
+  
+    // When wrangling with duckdb-wasm, we need to do it async.
+    $effect(async () => {
+        if (!duckDB.loading && duckDB.query) {
             countData = await duckDB.query(
                 `
                 SELECT *
@@ -25,10 +34,9 @@
                     WHERE has_research_group IS NOT NULL
                     GROUP BY has_research_group, host_dept
                 ) AS grouped
-                WHERE has_research_group = 1
                 ORDER BY n DESC
-                LIMIT 10
-                `
+                LIMIT ?
+                `, [topN]
             );
         }
     });
@@ -37,41 +45,66 @@
     let wrangledData = $derived.by(() => {
         if (!selected || !rawData.length) return [];
         return rawData.filter(d => d.host_dept === selected);
-    });
+    })
+
+    const departments = $derived(Array.from(new Set(rawData.map(d => d.host_dept))).sort());
+    let topN = $state(20);
+
+     
+
+  
+  $inspect(selected);
+
 </script>
 
 <MD text={`
-# Hello Markdown
+# Exploring UVM research groups
 
-This is an example of a sveltekit app that uses DuckDB to query a CSV file, ex-markdown as markdown renderer, and LayerCake for data visualization. But we gain a few things, such as sorting and aggregating on the fly while plotting. 
+This is an example of a sveltekit app that uses 
+- [DuckDB-wasm](https://www.npmjs.com/package/@duckdb/duckdb-wasm) for efficient in-browser data wrangling.
+- [ex-markdown](https://github.com/ssssota/svelte-exmarkdown) as markdown renderer.
+- [ObservablePlot](https://observablehq.com/plot/) for quick data visualizations.
+- [LayerCake](https://layercake.graphics/) for tailored data visualizations. 
+- [Bits-UI](https://bits-ui.com/) for other components.
+
+We weight the pros and cons of such setup compared to using something like [Observable framework](https://github.com/observablehq/framework).
 
 ## Count Data
 
-We start by looking at some count data
+We start by looking at some count data of departments represented in the dataset
 `}/>
 
-<MD text={`Here is the corresponding bar chart in Observable Plot. The code is a bit clunky.`}/>
+<MyRange min={5} max={31} label="Top N" bind:value={topN}/>
 
 <ObservablePlot 
   options={{
-    marginLeft: 300,
-    width: 600,
-    x: { label: "Count", grid: true },
-    y: { label: "Department" },
+    marginLeft: 50,
+    marginRight: 10,
+    marginBottom: 120,
+    width: 1000,
+    y: { label: "Count", grid: true },
+    x: { 
+        label: "Department", 
+        axis:null
+    },
+    fx: { 
+        tickRotate: 45, 
+        label: null,
+        tickFormat: d => d.length > 25 ? d.slice(0, 25) + "..." : d
+     },
+    color: {scheme: "spectral", legend: true, type: "categorical"},
     marks: [
-      Plot.barX(countData, {
-        x: 'n', 
-        y: 'host_dept', 
-        fill: 'steelblue',
-        sort: {y: '-x'}
+      Plot.barY(countData, {
+        y: 'n', 
+        x: 'has_research_group', 
+        fill: 'has_research_group',
+        fx: 'host_dept',
+        tip: true,
+        sort: {x: null, color: null, fx: {value: "-y", reduce: "sum"}}
       })
     ]
   }}
 />
-
-<MD text={`Here is the corresponding table`}/>
-
-<ScrollingTable data={countData} initialRows={12} maxHeight="400px" />
 
 <MD text={`
 ## Filtered data
@@ -79,21 +112,23 @@ We start by looking at some count data
 Here we filter some data based on host department.
 `}/>
 
-<select bind:value={selected}>
-    {#each new Set(rawData.map(d => d.host_dept)) as dept}
-            <option value={dept}>{dept}</option>
-    {/each}
-</select>
+<MySelect options={departments} bind:value={selected}/>
+
 
 <ScrollingTable data={wrangledData} initialRows={12} maxHeight="400px" />
 
-<MD text={`## Raw Data`}/>
+<MD text={`
+---
+# Appendix
+
+Here is the raw data
+`}/>
 
 <ScrollingTable data={rawData} initialRows={12} maxHeight="400px" />
 
 <style>
   :global(body) {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 1rem;
     font-family: system-ui, sans-serif;

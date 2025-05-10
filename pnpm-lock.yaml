@@ -20,6 +20,9 @@ dependencies:
   bits-ui:
     specifier: ^1.4.7
     version: 1.4.7(svelte@5.28.2)
+  clsx:
+    specifier: ^2.1.1
+    version: 2.1.1
   d3-scale:
     specifier: ^4.0.2
     version: 4.0.2
@@ -29,6 +32,9 @@ dependencies:
   svelte-exmarkdown:
     specifier: ^5.0.1
     version: 5.0.1(svelte@5.28.2)
+  tailwind-animate:
+    specifier: ^0.2.10
+    version: 0.2.10
   web-worker:
     specifier: ^1.5.0
     version: 1.5.0
@@ -49,6 +55,9 @@ devDependencies:
   '@tailwindcss/vite':
     specifier: ^4.0.0
     version: 4.1.5(vite@6.3.5)
+  phosphor-svelte:
+    specifier: ^3.0.1
+    version: 3.0.1(svelte@5.28.2)(vite@6.3.5)
   prettier:
     specifier: ^3.4.2
     version: 3.5.3
@@ -1282,6 +1291,12 @@ packages:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
 
+  /estree-walker@3.0.3:
+    resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
+    dependencies:
+      '@types/estree': 1.0.7
+    dev: true
+
   /extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==}
     dev: false
@@ -1927,6 +1942,21 @@ packages:
     hasBin: true
     dev: true
 
+  /phosphor-svelte@3.0.1(svelte@5.28.2)(vite@6.3.5):
+    resolution: {integrity: sha512-QuxdzWCBjNZXglk4XpmaKb+JRA6XgKOYWpBY8k82NZwxO5ec7u2iFuueAijKYgj/7hLWHtreAPc2Q5uZFNTRSQ==}
+    peerDependencies:
+      svelte: ^5.0.0 || ^5.0.0-next.96
+      vite: '>=5'
+    peerDependenciesMeta:
+      vite:
+        optional: true
+    dependencies:
+      estree-walker: 3.0.3
+      magic-string: 0.30.17
+      svelte: 5.28.2
+      vite: 6.3.5
+    dev: true
+
   /picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
     dev: true
@@ -2238,6 +2268,10 @@ packages:
     dependencies:
       array-back: 6.2.2
       wordwrapjs: 5.1.0
+    dev: false
+
+  /tailwind-animate@0.2.10:
+    resolution: {integrity: sha512-9vczT78R9O7HIrydvGJNz4/19ogjSQSFlYpwleAxcxIT1m9pvAIGQr/+f6qG9sB5gq3JLB6IRKmw9RGJUrLeXQ==}
     dev: false
 
   /tailwindcss@4.1.5:
