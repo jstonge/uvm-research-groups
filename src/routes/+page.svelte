@@ -14,6 +14,9 @@
     let rawData = $state([]);
     let countData = $state([]);
     let selected = $state("");
+    let departments = $derived(Array.from(new Set(rawData.map(d => d.host_dept))).sort());
+    let topN = $state(20);
+    
 
     // When wrangling with duckdb-wasm, we need to do it async.
     $effect(async () => {
@@ -46,14 +49,6 @@
         if (!selected || !rawData.length) return [];
         return rawData.filter(d => d.host_dept === selected);
     })
-
-    const departments = $derived(Array.from(new Set(rawData.map(d => d.host_dept))).sort());
-    let topN = $state(20);
-
-     
-
-  
-  $inspect(selected);
 
 </script>
 
