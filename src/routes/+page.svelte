@@ -6,7 +6,7 @@
     import ScrollingTable from '$lib/components/ScrollingTable.svelte';
     import ObservablePlot from '$lib/components/ObservablePlot.svelte';
     import MyRange from '$lib/components/MyRange.svelte';
-    import MySelect from '$lib/components/MySelect.svelte';
+    // import MySelect from '$lib/components/MySelect.svelte';
 
     const duckDB = useDuckDB('data', '/data.csv');
 
@@ -107,7 +107,7 @@ We start by looking at some count data of departments represented in the dataset
 Here we filter some data based on host department.
 `}/>
 
-<MySelect options={departments} bind:value={selected}/>
+<!-- <MySelect options={departments} bind:value={selected}/> -->
 
 
 <ScrollingTable data={wrangledData} initialRows={12} maxHeight="400px" />
