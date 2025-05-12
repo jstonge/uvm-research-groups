@@ -12,11 +12,19 @@ This is an example of a sveltekit app that uses
 
 We weight the pros and cons of such setup compared to using something like [Observable framework](https://github.com/observablehq/framework). See README on github to get the setup up and running.
 
+To have help from your friends the LLMs writing Svelte5, we also started using Claude's project with Svelte's [llms.txt](https://svelte-llm.khromov.se/svelte-complete-distilled). It works amazingly well.
+
 ## Count Data
 
 We start by looking at total counts of profs with research groups. One nice thing with using ObservablePlot over layerCake is that we can use some aggregation functions like count and sum on the fly 
+
 `}/>
 
+{#if duckDB.loading}
+  <div class="flex justify-center items-center min-h-[50vh]">
+    <Spinner />
+  </div>
+{:else}
 <ObservablePlot 
   options={{
     width: 300,
@@ -87,7 +95,7 @@ Here is the raw data
 
 <ScrollingTable data={rawData} initialRows={12} maxHeight="400px" />
 
-
+{/if}
 
 <script>
     import { useDuckDB } from '$lib/db/useDuckDB.svelte.js';
@@ -98,6 +106,7 @@ Here is the raw data
     import ObservablePlot from '$lib/components/ObservablePlot.svelte';
     import MyRange from '$lib/components/MyRange.svelte';
     import MySelect from '$lib/components/MySelect.svelte';
+    import Spinner from '$lib/components/Spinner.svelte';
 
     const duckDB = useDuckDB('data', '/data.csv');
 
